@@ -1,14 +1,20 @@
 import os, sys, time, re
 
 while (1):
-    if os.environ.get('PS1') != None:
-        prompt_input = input(os.environ['PS1']) # Add input.
+    if os.environ.get('$PS1') != None:
+        prompt_input = input(os.environ['$PS1']) # Add input.
+        print("here")
     else:
         prompt_input = input("$ ")
-    pipes = prompt_input.split(" | ")
+    args = prompt_input.split(" | ")
+
+    if args[0] == "":
+        continue
+
     if args[0] == "exit":
         sys.exit(1)
-        rc = os.fork()
+
+    rc = os.fork()
     if rc < 0:
         os.write(2,
                 ("fork failed, returning %d\n" % rc).encode())
