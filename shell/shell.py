@@ -44,14 +44,21 @@ while (1):
 
     # Need to sperate pipes here.
 
-    print(args)
-
     rc = os.fork()
     if rc < 0:
         os.write(2,
                 ("fork failed, returning %d\n" % rc).encode())
         sys.exit(1)
     elif rc == 0:
+
+        if has_to_file:
+            os.close(1)
+            os.open(has_to_file.groups()[1], os.O_CREAT | os.O_WRONLY)
+            os.set_inheritable(1, True)
+
+        if from_file_name:
+            args.append(from_file_name)
+
         process_flag = False
         for dir in re.split(":", os.environ['PATH']):
             program = "%s/%s" % (dir, args[0])
