@@ -10,7 +10,7 @@ def parse_single_cmd(cmd):
         if cmd[-1] == "\n":
             cmd = cmd[0:-1]
 
-        from_file_name = to_file_name = None
+        from_file_name = to_file_name = has_directory_path = None
         cmd = " " + cmd + " "
 
         # isolate < from_file_name
@@ -42,6 +42,12 @@ while (1):
 
     args, from_file_name, has_to_file = parse_single_cmd(prompt_input)
 
+    # change directory
+    if "cd" in args:
+        process_flag = True;
+        os.chdir(os.getcwd() + "/" + args[1])
+        continue
+
     # Need to sperate pipes here.
 
     rc = os.fork()
@@ -50,7 +56,7 @@ while (1):
                 ("fork failed, returning %d\n" % rc).encode())
         sys.exit(1)
     elif rc == 0:
-
+        process_flag = False
         if has_to_file:
             os.close(1)
             os.open(has_to_file.groups()[1], os.O_CREAT | os.O_WRONLY)
@@ -59,7 +65,6 @@ while (1):
         if from_file_name:
             args.append(from_file_name)
 
-        process_flag = False
         for dir in re.split(":", os.environ['PATH']):
             program = "%s/%s" % (dir, args[0])
             try:
