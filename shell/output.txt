@@ -1,0 +1,59 @@
+Testing no parameter, full pathname 1
+-e PASSED: no parameter, full pathname 1
+-----------------------------------------
+Testing two commands, full pathname2
+1d0
+< Darwin
+-e FAILED: two commands, full pathname2
+-----------------------------------------
+Testing two commands, blank line in-between, full pathname3
+1d0
+< Darwin
+-e FAILED: two commands, blank line in-between, full pathname3
+-----------------------------------------
+Testing no parameter, no pathname
+-e PASSED: no parameter, no pathname
+-----------------------------------------
+Testing one parameter, full pathname
+-e PASSED: one parameter, full pathname
+-----------------------------------------
+Testing one parameter, no pathname
+-e PASSED: one parameter, no pathname
+-----------------------------------------
+Testing pipe
+-e PASSED: pipe
+-----------------------------------------
+Testing 2 pipes
+1d0
+<        0       0       0
+-e FAILED: 2 pipes
+-----------------------------------------
+Testing redirect input
+-e PASSED: redirect input
+-----------------------------------------
+Testing redirect output
+-e PASSED: redirect output
+-----------------------------------------
+Testing background
+-e PASSED: background
+-----------------------------------------
+Testing change dir
+1d0
+< /Users/greywind/Desktop/OS/project1-shell-Edd1e234/shell
+-e FAILED: change dir
+-----------------------------------------
+-e 
+
+Results
+-e PASSED: no parameter, full pathname 1
+-e FAILED: two commands, full pathname2
+-e FAILED: two commands, blank line in-between, full pathname3
+-e PASSED: no parameter, no pathname
+-e PASSED: one parameter, full pathname
+-e PASSED: one parameter, no pathname
+-e PASSED: pipe
+-e FAILED: 2 pipes
+-e PASSED: redirect input
+-e PASSED: redirect output
+-e PASSED: background
+-e FAILED: change dir

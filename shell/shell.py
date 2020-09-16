@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os, sys, time, re
 
 def parse_single_cmd(cmd):
@@ -36,9 +38,6 @@ def excute_program(single_cmd):
     Will excute a program. In process.
     """
     args, has_to_file, from_file_name = parse_single_cmd(single_cmd)
-    print("Args are: ")
-    print(args)
-    print(has_to_file)
 
     process_flag = False
     if has_to_file:
@@ -48,6 +47,7 @@ def excute_program(single_cmd):
     if from_file_name:
         args.append(from_file_name)
 
+#    os.write(1, ("Made it here.").encode())
     for dir in re.split(":", os.environ['PATH']):
         program = "%s/%s" % (dir, args[0])
         try:
@@ -55,32 +55,38 @@ def excute_program(single_cmd):
             os.execve(program, args, os.environ)
         except FileNotFoundError:
             pass
-    if process_flag:
-        print("'" + args[0] +"' command not found.")
+        if process_flag is not True:
+            os.write(1, (args[0] + ": command not found\n").encode())
     sys.exit(1)
 
 while (1):
-    if os.environ.get('$PS1') != None:
-        prompt_input = input(os.environ['$PS1']) # Add input.
-    else:
-        prompt_input = input("$ ")
+    prompt = "$ "
+    if "PS1" in os.environ:
+        prompt = os.environ["PS1"]
 
-    if prompt_input == "":
-        continue
-
-    if prompt_input.lower() in "exit":
+    try:
+        prompt_input = [str(chr) for chr in input(prompt).split()]
+    except EOFError:
         sys.exit(1)
 
-    # change directory
+    if not prompt_input:
+        os.write(1, ("Nothing was written\n").encode())
+        continue
+
+    if "exit" in prompt_input:
+        sys.exit(1)
+
+    # this is broken.
     if "cd" in prompt_input:
         args = prompt_input.split(" ")
         try:
             process_flag = True;
             os.chdir(os.getcwd() + "/" + args[1])
         except FileNotFoundError:
-            print("Does not exist.")
+            os.write(2, ("Not workign").encode())
         continue
 
+    prompt_input = ' '.join([str(chr) for chr in prompt_input])
     rc = os.fork()
     if rc < 0:
         os.write(2,
@@ -88,7 +94,7 @@ while (1):
         sys.exit(1)
     elif rc == 0:
         if "|" in prompt_input:
-            print("Pipe found.")
+            # print("Pipe found.")
             pipe = prompt_input.split("|")
             cmd_1 = pipe[0].split()
             cmd_2 = pipe[1].split()

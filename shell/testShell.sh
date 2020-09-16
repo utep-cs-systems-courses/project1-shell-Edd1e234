@@ -1,5 +1,5 @@
 #set -x
-if [ -z $1 ] ; then 
+if [ -z $1 ] ; then
     echo "Usage: $0 [myShell]" >&2
     exit 1
 fi
@@ -27,9 +27,9 @@ chkcmd () {
     echo "-----------------------------------------"
 }
 
-chkcmd "$_uname" "no parameter, full pathname"
-chkcmd "$_uname \n $_uname" "two commands, full pathname"
-chkcmd "$_uname \n\n $_uname" "two commands, blank line in-between, full pathname"
+chkcmd "$_uname" "no parameter, full pathname 1"
+chkcmd "$_uname \n $_uname" "two commands, full pathname2"
+chkcmd "$_uname \n\n $_uname" "two commands, blank line in-between, full pathname3"
 chkcmd "uname" "no parameter, no pathname"
 chkcmd "$_cat $_passwd" "one parameter, full pathname"
 chkcmd "cat $_passwd" "one parameter, no pathname"
@@ -45,6 +45,3 @@ echo -e "\n\nResults"
 cat testLog.txt
 
 rm /tmp/c1 /tmp/t1 /tmp/t2
-
-
-
