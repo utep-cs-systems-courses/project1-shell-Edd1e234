@@ -8,5 +8,5 @@
 -e FAILED: 2 pipes
 -e PASSED: redirect input
 -e PASSED: redirect output
--e PASSED: background
+-e FAILED: background
 -e FAILED: change dir

@@ -35,19 +35,19 @@ def parse_single_cmd(cmd):
 
 def excute_program(single_cmd):
     """
-    Will excute a program. In process.
+    Will excute a program. Process should be created outside.
     """
     args, has_to_file, from_file_name = parse_single_cmd(single_cmd)
-
     process_flag = False
-    if has_to_file:
+
+    if has_to_file: # redirects for output file.
         os.close(1)
         os.open(has_to_file.groups()[1], os.O_CREAT | os.O_WRONLY)
         os.set_inheritable(1, True)
-    if from_file_name:
+
+    if from_file_name: # redirects for input file.
         args.append(from_file_name)
 
-#    os.write(1, ("Made it here.").encode())
     for dir in re.split(":", os.environ['PATH']):
         program = "%s/%s" % (dir, args[0])
         try:
@@ -76,7 +76,9 @@ while (1):
     if "exit" in prompt_input:
         sys.exit(1)
 
-    # this is broken.
+    prompt_input = ' '.join([str(chr) for chr in prompt_input])
+
+    # change directory
     if "cd" in prompt_input:
         args = prompt_input.split(" ")
         try:
@@ -86,7 +88,6 @@ while (1):
             os.write(2, ("Not workign").encode())
         continue
 
-    prompt_input = ' '.join([str(chr) for chr in prompt_input])
     rc = os.fork()
     if rc < 0:
         os.write(2,
