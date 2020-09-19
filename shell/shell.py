@@ -1,6 +1,10 @@
+
 #!/usr/bin/env python3
 
 import os, sys, time, re
+
+AMOUNT_OF_CHAR = 100
+DEBUG = True
 
 def parse_single_cmd(cmd):
         """
@@ -51,23 +55,28 @@ def excute_program(single_cmd):
     for dir in re.split(":", os.environ['PATH']):
         program = "%s/%s" % (dir, args[0])
         try:
-            process_flag = True
             os.execve(program, args, os.environ)
         except FileNotFoundError:
+            process_flag = True
             pass
-        if process_flag is not True:
-            os.write(1, (args[0] + ": command not found\n").encode())
+    if process_flag is True:
+        os.write(1, (args[0] + ": command not found\n").encode())
     sys.exit(1)
 
 while (1):
     prompt = "$ "
     if "PS1" in os.environ:
         prompt = os.environ["PS1"]
-
+    os.write(1, prompt.encode())
     try:
-        prompt_input = [str(chr) for chr in input(prompt).split()]
+        prompt_input = os.read(0, AMOUNT_OF_CHAR)
+        prompt_input = [str(chr) for chr in prompt_input.decode().split("\n")]
+
+        if DEBUG:
+            print(prompt_input)
     except EOFError:
         sys.exit(1)
+
 
     if not prompt_input:
         os.write(1, ("Nothing was written\n").encode())
