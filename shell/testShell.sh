@@ -1,5 +1,5 @@
 #set -x
-if [ -z $1 ] ; then
+if [ -z $1 ] ; then 
     echo "Usage: $0 [myShell]" >&2
     exit 1
 fi
