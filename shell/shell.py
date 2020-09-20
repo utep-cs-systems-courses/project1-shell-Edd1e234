@@ -44,6 +44,11 @@ def excute_program(single_cmd):
     args, has_to_file, from_file_name = parse_single_cmd(single_cmd)
     process_flag = False
 
+    if DEBUG:
+        print("Args: ")
+        print("\t",args)
+
+
     if has_to_file: # redirects for output file.
         os.close(1)
         os.open(has_to_file.groups()[1], os.O_CREAT | os.O_WRONLY)
@@ -71,40 +76,43 @@ while (1):
     try:
         prompt_input = os.read(0, AMOUNT_OF_CHAR)
         prompt_input = [str(chr) for chr in prompt_input.decode().split("\n")]
-
         if DEBUG:
             print(prompt_input)
     except EOFError:
         sys.exit(1)
 
-
+    # Skips if prompt_input is empty.
     if not prompt_input:
-        os.write(1, ("Nothing was written\n").encode())
+        if DEBUG:
+            os.write(2, ("Nothing was written\n").encode())
+
         continue
 
     if "exit" in prompt_input:
         sys.exit(1)
 
     prompt_input = ' '.join([str(chr) for chr in prompt_input])
+    if DEBUG:
+        print(prompt_input)
 
     # change directory
     if "cd" in prompt_input:
         args = prompt_input.split(" ")
         try:
-            process_flag = True;
+            if DEBUG:
+                os.write(1, ("Changing Directory").encode())
+                print("Changing dir")
             os.chdir(os.getcwd() + "/" + args[1])
         except FileNotFoundError:
-            os.write(2, ("Not workign").encode())
+            os.write(2, ("cd FAILED").encode())
         continue
 
     rc = os.fork()
     if rc < 0:
-        os.write(2,
-                ("fork failed, returning %d\n" % rc).encode())
+        os.write(2, ("fork failed, returning %d\n" % rc).encode())
         sys.exit(1)
     elif rc == 0:
         if "|" in prompt_input:
-            # print("Pipe found.")
             pipe = prompt_input.split("|")
             cmd_1 = pipe[0].split()
             cmd_2 = pipe[1].split()
@@ -115,7 +123,7 @@ while (1):
 
             pipe_rc = os.fork()
             if pipe_rc < 0:
-                os.write(2, ("fork faile").encode())
+                os.write(2, ("fork FAILED").encode())
                 sys.exit(1)
 
             elif pipe_rc == 0:
