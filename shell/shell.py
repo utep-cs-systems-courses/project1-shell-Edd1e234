@@ -42,7 +42,8 @@ def excute_program(args):
             pass
         if process_flag is True:
             os.write(1, (args[0] + ": command not found\n").encode())
-    sys.exit(1)
+        os.write(1, ("##########").encode())
+        sys.exit(1)
 
 def run_command(prompt_input):
 
@@ -137,6 +138,7 @@ while (1):
         if "" in arg:
             continue
         if DEBUG:
+            os.write(1, ("--------------").encode())
             os.write(1, ("AFTER COMBINE").encode())
             os.write(1, (str(prompt_input) + "\n").encode())
         run_command(arg)
