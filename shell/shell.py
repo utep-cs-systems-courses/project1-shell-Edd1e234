@@ -10,7 +10,7 @@ def excute_program(args):
     Will excute a program. Process should be created outside.
     """
     process_flag = False
-    if DEBUG:
+po    if DEBUG:
         os.write(1,"Args: ".encode())
         os.write(1, ("\t" + str(args) + "\n").encode())
 
@@ -98,19 +98,14 @@ while (1):
     os.write(1, prompt.encode())
     try:
         prompt_input = os.read(0, AMOUNT_OF_CHAR)
-        if not prompt_input: break
+        if len(prompt_input) == 1:
+            continue
         prompt_input = prompt_input.decode().split("\n")
         if DEBUG:
             os.write(1,("Right After prompt\n").encode())
             os.write(1, (str(prompt_input) + "\n").encode())
     except EOFError:
         sys.exit(1)
-
-    # Skips if prompt_input is empty.
-    # if not prompt_input:
-    #     if DEBUG:
-    #         os.write(2, ("Nothing was written\n").encode())
-    #     continue
 
     if "exit" in prompt_input:
         sys.exit(1)
