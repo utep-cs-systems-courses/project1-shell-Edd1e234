@@ -3,14 +3,14 @@
 import os, sys, re
 
 AMOUNT_OF_CHAR = 10000
-DEBUG = True
+DEBUG = False
 
 def excute_program(args):
     """
     Will excute a program. Process should be created outside.
     """
     process_flag = False
-po    if DEBUG:
+    if DEBUG:
         os.write(1,"Args: ".encode())
         os.write(1, ("\t" + str(args) + "\n").encode())
 
