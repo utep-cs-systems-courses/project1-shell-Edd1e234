@@ -3,7 +3,7 @@
 import os, sys, re
 
 AMOUNT_OF_CHAR = 10000
-DEBUG = False
+DEBUG = True
 
 def excute_program(args):
     """
@@ -36,12 +36,17 @@ def excute_program(args):
     for dir in re.split(":", os.environ['PATH']):
         program = "%s/%s" % (dir, args[0])
         try:
-            os.execve(program, args, os.environ)
             process_flag = True
+            os.execve(program, args, os.environ)
+            if DEBUG:
+                os.write(1, ("process flag is now true.").encode())
         except FileNotFoundError:
+            process_flag = False
             pass
-        if process_flag is True:
-            os.write(1, (args[0] + ": command not found\n").encode())
+    if process_flag is False:
+        if DEBUG:
+            os.write(1, ("inside process flag").encode())
+        os.write(1, (args[0] + ": command not found\n").encode())
         # os.write(1, ("##########").encode())
     sys.exit(1)
 
@@ -98,7 +103,8 @@ while (1):
     os.write(1, prompt.encode())
     try:
         prompt_input = os.read(0, AMOUNT_OF_CHAR)
-        if not prompt_input: break
+        if len(prompt_input) == 1:
+            continue
         prompt_input = prompt_input.decode().split("\n")
         if DEBUG:
             os.write(1,("Right After prompt\n").encode())
