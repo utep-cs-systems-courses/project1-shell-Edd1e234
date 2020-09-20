@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import os, sys, time, re
+import os, sys, re
 
 AMOUNT_OF_CHAR = 10000
-DEBUG = True
+DEBUG = False
 
 def excute_program(args):
     """
@@ -42,8 +42,8 @@ def excute_program(args):
             pass
         if process_flag is True:
             os.write(1, (args[0] + ": command not found\n").encode())
-        os.write(1, ("##########").encode())
-        sys.exit(1)
+        # os.write(1, ("##########").encode())
+    sys.exit(1)
 
 def run_command(prompt_input):
 
@@ -56,9 +56,8 @@ def run_command(prompt_input):
                 os.write(1,"inside rc\n".encode())
 
             if "|" in prompt_input:
-                pipe = prompt_input.split("|")
-                cmd_1 = pipe[0].split()
-                cmd_2 = pipe[1].split()
+                cmd_1 = prompt_input[:prompt_input.index('|')]
+                cmd_2 = prompt_input[prompt_input.index('|')+1:]
 
                 pr, pw = os.pipe() # file descriptors for reading and writing.
                 for file_descriptor in (pr, pw):
@@ -74,7 +73,7 @@ def run_command(prompt_input):
                     os.dup(pw)
                     os.set_inheritable(1, True)
                     for file_descriptor in (pr, pw):
-                        os.close(fd)
+                        os.close(file_descriptor)
                     excute_program(cmd_1)
                 else:
                     os.close(0)
@@ -99,6 +98,7 @@ while (1):
     os.write(1, prompt.encode())
     try:
         prompt_input = os.read(0, AMOUNT_OF_CHAR)
+        if not prompt_input: break
         prompt_input = prompt_input.decode().split("\n")
         if DEBUG:
             os.write(1,("Right After prompt\n").encode())
@@ -107,10 +107,10 @@ while (1):
         sys.exit(1)
 
     # Skips if prompt_input is empty.
-    if prompt_input == ['', '']:
-        if DEBUG:
-            os.write(2, ("Nothing was written\n").encode())
-        continue
+    # if not prompt_input:
+    #     if DEBUG:
+    #         os.write(2, ("Nothing was written\n").encode())
+    #     continue
 
     if "exit" in prompt_input:
         sys.exit(1)
