@@ -3,7 +3,7 @@
 import os, sys, time, re
 
 AMOUNT_OF_CHAR = 10000
-DEBUG = False
+DEBUG = True
 
 def excute_program(args):
     """
