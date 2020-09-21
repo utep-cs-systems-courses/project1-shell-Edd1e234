@@ -92,25 +92,30 @@ def run_pipe(cmd):
 
 
 def run_command(prompt_input):
-        rc = os.fork()
-        if rc < 0:
-            os.write(2, ("fork failed, returning %d\n" % rc).encode())
-            sys.exit(1)
-        elif rc == 0:
+    wait = True
+    if "&" in prompt_input:
+        wait = False
+        prompt_input.remove("&")
+
+    rc = os.fork()
+    if rc < 0:
+        os.write(2, ("fork failed, returning %d\n" % rc).encode())
+        sys.exit(1)
+    elif rc == 0:
+        if DEBUG:
+            os.write(1,"inside rc\n".encode())
+        if "|" in prompt_input:
             if DEBUG:
-                os.write(1,"inside rc\n".encode())
-            if "|" in prompt_input:
-                if DEBUG:
-                    os.write(1, ("pipe\n").encode())
-                run_pipe(prompt_input)
-            else:
-                if DEBUG:
-                    os.write(1,"EXCUTE PROGRAM".encode())
-                    os.write(1, (str(prompt_input) + "\n").encode())
-                excute_program(prompt_input)
+                os.write(1, ("pipe\n").encode())
+            run_pipe(prompt_input)
         else:
-            if prompt_input[-1] != "&":
-                os.wait()
+            if DEBUG:
+                os.write(1,"EXCUTE PROGRAM".encode())
+                os.write(1, (str(prompt_input) + "\n").encode())
+            excute_program(prompt_input)
+    else:
+        if wait:
+            os.wait()
 
 
 while (1):
