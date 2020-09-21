@@ -31,7 +31,13 @@ def excute_program(args):
 
     except IndexError:
         if DEBUG:
-            os.write(1,"Nothing comes up.")
+            os.write(2,"Nothing comes up.")
+
+    try:
+        if args[0][0] == "/":
+            os.execve(args[0], args, os.environ)
+    except FileNotFoundError:
+        pass
 
     for dir in re.split(":", os.environ['PATH']):
         program = "%s/%s" % (dir, args[0])
@@ -46,7 +52,7 @@ def excute_program(args):
     if process_flag is False:
         if DEBUG:
             os.write(1, ("inside process flag").encode())
-        os.write(1, (args[0] + ": command not found\n").encode())
+        #os.write(2, (args[0] + ": command not found\n").encode())
         # os.write(1, ("##########").encode())
     sys.exit(1)
 
