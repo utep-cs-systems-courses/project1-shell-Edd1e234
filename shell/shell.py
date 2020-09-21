@@ -142,7 +142,7 @@ while (1):
             os.chdir(args[1])
         except FileNotFoundError:
             os.write(2, (args[1] + " does not exist").encode())
-        continue
+
 
     #if DEBUG:
     #    os.write(1, (str(prompt_input) + "\n").encode())
